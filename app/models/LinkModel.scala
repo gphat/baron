@@ -65,12 +65,16 @@ object LinkModel {
   /**
    * Delete a link.
    */
-  def delete(id: Long) {
+  def delete(id: Long): Option[Link] = {
+    getById(id).map({ link =>
+
       DB.withConnection { implicit conn =>
         deleteQuery.on(
-          'id -> id
+          'id -> link.id.get
         ).execute
       }
+      Some(link)
+    }).getOrElse(None)
   }
 
   /**
