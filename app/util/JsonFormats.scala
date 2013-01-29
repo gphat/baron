@@ -1,4 +1,4 @@
-package emp
+package util
 
 import anorm.{Id,NotAssigned}
 import models._

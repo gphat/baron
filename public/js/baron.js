@@ -7,3 +7,16 @@ function Link(data) {
   this.description = ko.observable(data.description);
   this.dateCreated = ko.observable(data.dateCreated);
 }
+
+function LinkViewModel() {
+  var self = this;
+  self.links = ko.observableArray([]);
+
+  console.log("ASD");
+  $.getJSON("/api/link")
+  .done(function(data) {
+    var mappedLinks = $.map(data, function(item) { return new Link(item) });
+    self.links(mappedLinks);
+  })
+  .fail(function() { console.log("XXX Failed to retrieve links!") });
+}

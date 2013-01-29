@@ -1,6 +1,5 @@
 package controllers.api
 
-import emp.JsonFormats._
 import com.codahale.jerkson.Json._
 import controllers._
 import models._
@@ -8,6 +7,7 @@ import play.api._
 import play.api.mvc._
 import play.api.libs.Jsonp
 import play.api.libs.json.Json
+import util.JsonFormats._
 
 object Link extends Controller {
 
@@ -41,4 +41,16 @@ object Link extends Controller {
     }).getOrElse(Ok(json))
   }
 
+  /**
+   * Get all links.
+   */
+  def list(callback: Option[String]) = Action { implicit request =>
+    val links = LinkModel.getAll
+
+    val json = Json.toJson(links)
+    callback match {
+      case Some(callback) => Ok(Jsonp(callback, json))
+      case None => Ok(json)
+    }
+  }
 }

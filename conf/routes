@@ -5,6 +5,7 @@
 # Home page
 GET     /                           controllers.Application.index
 
+GET     /api/link                   controllers.api.Link.list(callback: Option[String])
 POST    /api/link                   controllers.api.Link.add(callback: Option[String])
 DELETE  /api/link/:id               controllers.api.Link.delete(id: Long, callback: Option[String])
 

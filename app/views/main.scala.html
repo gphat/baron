@@ -9,8 +9,9 @@
   <link rel="stylesheet" href="@routes.Assets.at("stylesheets/main.css")">
   <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
   <script src="@routes.Assets.at("js/jquery-1.9.0.min.js")" type="text/javascript"></script>
-  <script src="@routes.Assets.at("js/knockout-2.2.1.min.js")" type="text/javascript"></script>
+  <script src="@routes.Assets.at("js/knockout-2.2.1.js")" type="text/javascript"></script>
   <script src="@routes.Assets.at("js/bootstrap.min.js")" type="text/javascript"></script>
+  <script src="@routes.Assets.at("js/baron.js")" type="text/javascript"></script>
  </head>
  <body>
 
@@ -61,23 +62,7 @@
       </div>
      </div>
      <div class="span9">
-      <div class="row-fluid">
-       <div class="span4">
-        <h2>Heading</h2>
-        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-        <p><a class="btn" href="#">View details &raquo;</a></p>
-       </div>
-       <div class="span4">
-        <h2>Heading</h2>
-        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-        <p><a class="btn" href="#">View details &raquo;</a></p>
-       </div>
-       <div class="span4">
-        <h2>Heading</h2>
-        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-        <p><a class="btn" href="#">View details &raquo;</a></p>
-       </div>
-      </div>
+      @content
      </div>
     </div>
     <hr>

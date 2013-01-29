@@ -1,0 +1,16 @@
+# --- !Ups
+
+CREATE TABLE links (
+  id BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
+  url TEXT NOT NULL,
+  poster BIGINT UNSIGNED,
+  org BIGINT UNSIGNED,
+  position INT UNSIGNED,
+  description TEXT,
+  date_created DATETIME NOT NULL,
+  PRIMARY KEY(id)
+) ENGINE InnoDB CHARACTER SET utf8 COLLATE utf8_bin;
+
+# --- !Downs
+
+DROP TABLE IF EXISTS links;
