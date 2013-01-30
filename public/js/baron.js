@@ -1,3 +1,15 @@
+function processJsonError(resp) {
+  var data = JSON.parse(resp)
+  if(typeof data !== "undefined") {
+    for(var k in data) {
+      if(data.hasOwnProperty(k)) {
+        console.log("#field-" + k);
+        $("#field-" + k).addClass("error");
+      }
+    }
+  }
+}
+
 function Link(data) {
   this.id       = ko.observable(data.id);
   this.url      = ko.observable(data.url);
@@ -12,11 +24,35 @@ function LinkViewModel() {
   var self = this;
   self.links = ko.observableArray([]);
 
-  console.log("ASD");
   $.getJSON("/api/link")
   .done(function(data) {
     var mappedLinks = $.map(data, function(item) { return new Link(item) });
     self.links(mappedLinks);
   })
   .fail(function() { console.log("XXX Failed to retrieve links!") });
+}
+
+function AddLinkViewModel() {
+  var self = this;
+  self.url = ko.observable("");
+  self.position = ko.observable();
+  self.org = ko.observable();
+  self.description = ko.observable("");
+
+  self.doSubmit = function () {
+    var data = $("add-link").serialize();
+    console.log(data);
+    // $.ajax({
+    //   type: "POST",
+    //   url: "/api/link",
+    //   dataType: "jsonp",
+    //   data: $("add-link").serialize()
+    // })
+    //   .success(function(data) {
+    //     console.log(data);
+    //   })
+    //   .error(function(e) {
+    //     processJsonError(e.responseText);
+    //   })
+  }
 }

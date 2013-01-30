@@ -1,13 +1,40 @@
-@(message: String)
+@(objForm: Form[(models.Link)])
+
+@import helper._
+@import helper.bootstrap._
 
 @main(Messages("product.name")) {
 
-YEAH!
+<a href="#addLink" role="button" class="btn" data-toggle="modal">@Messages("link.add.title")</a>
+<div id="fuck">asdasd</div>
+<div id="addLink" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="addLink" aria-hidden="true">
+ @helper.bootstrap.form(action = controllers.api.routes.Link.add(None), dataBind="submit: doSubmit", args = 'class -> "form-horizontal", 'id -> "add-link") {
+  <div class="modal-header">
+   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+   <h3 id="myModalLabel">@Messages("link.add.title")</h3>
+  </div>
+  <div class="modal-body">
+   <fieldset>
+    @helper.bootstrap.inputText(field = objForm("url"), dataBind = "value: url", args = 'class -> "span8", '_label -> Messages("link.url"))
+    @helper.bootstrap.inputText(field = objForm("org"), dataBind = "value: org", args = 'class -> "span8", '_label -> Messages("link.org"))
+    @helper.bootstrap.inputText(field = objForm("position"), dataBind = "value: position", args = 'class -> "span8", '_label -> Messages("link.position"))
+    @helper.bootstrap.textarea(field = objForm("description"), dataBind="value: description", args = 'class -> "span8", 'rows -> 5, '_label -> Messages("link.description"))
+ </fieldset>
+ </div>
+ <div class="modal-footer">
+  <button class="btn" data-dismiss="modal" aria-hidden="true"><i class="icon-ban-circle"></i> @Messages("general.cancel")</button>
+  <button type="submit" class="btn btn-primary"><i class="icon-plus-sign icon-white"></i> @Messages("general.add")</button>
+ </div>
+ }
+</div>
 
 <script>
 $(function(){
-  var view = LinkViewModel();
-  ko.applyBindings(view);
+  // var view = LinkViewModel();
+  // ko.applyBindings(view);
+
+  var addLink = AddLinkViewModel();
+  ko.applyBindings(addLink, $("#addLink").get(0));
 });
 </script>
 }

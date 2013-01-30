@@ -1,4 +1,12 @@
 product.name=Baron
 
 general.about=About
+general.add=Add
+general.cancel=Cancel
 general.home=Home
+
+link.add.title=Add Link
+link.description=Description
+link.org=Organization
+link.position=Position
+link.url=URL
