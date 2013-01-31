@@ -1,7 +1,7 @@
 package controllers.api
 
 import anorm.{NotAssigned,Pk}
-import com.codahale.jerkson.Json._
+ // import com.codahale.jerkson.Json._
 import controllers._
 import models._
 import org.joda.time.DateTime
@@ -22,8 +22,8 @@ object Link extends Controller {
       "url"                 -> nonEmptyText,
       "poster"              -> longNumber,
       "org"                 -> longNumber,
-      "position"            -> number,
-      "url"                 -> text,
+      "position"            -> longNumber,
+      "description"         -> text,
       "date_created"        -> ignored(new DateTime())
     )(models.Link.apply)(models.Link.unapply)
   )

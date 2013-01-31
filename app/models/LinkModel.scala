@@ -17,7 +17,7 @@ case class Link(
   url: String,
   poster: Long,
   org: Long,
-  position: Int,
+  position: Long,
   description: String,
   dateCreated: DateTime
 )
@@ -28,7 +28,7 @@ object LinkModel {
   val getByIdQuery = SQL("SELECT * FROM links WHERE id={id}")
   val listQuery = SQL("SELECT * FROM links ORDER BY position LIMIT {offset},{count}")
   val listCountQuery = SQL("SELECT COUNT(*) FROM links")
-  val insertQuery = SQL("INSERT INTO links (url, poster, org, position, description, date_created) VALUES ({name}, {poster}, {org}, {position}, {description}, UTC_TIMESTAMP())")
+  val insertQuery = SQL("INSERT INTO links (url, poster, org, position, description, date_created) VALUES ({url}, {poster}, {org}, {position}, {description}, UTC_TIMESTAMP())")
   val updateQuery = SQL("UPDATE links SET url={url}, poster={poster}, org={org}, position={position}, description={description} WHERE id={id}")
   val deleteQuery = SQL("DELETE FROM links WHERE id={id}")
 
@@ -38,7 +38,7 @@ object LinkModel {
     get[String]("url") ~
     get[Long]("poster") ~
     get[Long]("org") ~
-    get[Int]("position") ~
+    get[Long]("position") ~
     get[String]("description") ~
     get[DateTime]("date_created") map {
       case id~url~poster~org~position~description~dateCreated => Link(id, url, poster, org, position, description, dateCreated)

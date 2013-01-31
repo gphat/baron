@@ -40,19 +40,20 @@ function AddLinkViewModel() {
   self.description = ko.observable("");
 
   self.doSubmit = function () {
-    var data = $("add-link").serialize();
-    console.log(data);
-    // $.ajax({
-    //   type: "POST",
-    //   url: "/api/link",
-    //   dataType: "jsonp",
-    //   data: $("add-link").serialize()
-    // })
-    //   .success(function(data) {
-    //     console.log(data);
-    //   })
-    //   .error(function(e) {
-    //     processJsonError(e.responseText);
-    //   })
+    console.log($("#add-link").serialize());
+    $.ajax({
+      type: "POST",
+      url: "/api/link",
+      // contentType: "application/json; charset=utf-8",
+      dataType: "jsonp",
+      data: $("#add-link").serialize()
+    })
+      .success(function(data) {
+        console.log(data);
+        $('#addLink').modal('hide')
+      })
+      .error(function(e) {
+        processJsonError(e.responseText);
+      })
   }
 }

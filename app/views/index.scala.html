@@ -6,7 +6,22 @@
 @main(Messages("product.name")) {
 
 <a href="#addLink" role="button" class="btn" data-toggle="modal">@Messages("link.add.title")</a>
-<div id="fuck">asdasd</div>
+<div id="links">
+ <table class="table table-bordered table-striped table-hover">
+  <thead>
+   <tr>
+    <th>URL</th>
+    <th>Description</th>
+   </tr>
+  </thead>
+  <tbody data-bind="foreach: links()">
+   <tr>
+    <td data-bind="text: url"></td>
+    <td data-bind="text: description"></td>
+   </tr>
+  </tbody>
+ </table>
+</div>
 <div id="addLink" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="addLink" aria-hidden="true">
  @helper.bootstrap.form(action = controllers.api.routes.Link.add(None), dataBind="submit: doSubmit", args = 'class -> "form-horizontal", 'id -> "add-link") {
   <div class="modal-header">
@@ -15,6 +30,7 @@
   </div>
   <div class="modal-body">
    <fieldset>
+    <input type="hidden" name="poster" id="poster" value="1">
     @helper.bootstrap.inputText(field = objForm("url"), dataBind = "value: url", args = 'class -> "span8", '_label -> Messages("link.url"))
     @helper.bootstrap.inputText(field = objForm("org"), dataBind = "value: org", args = 'class -> "span8", '_label -> Messages("link.org"))
     @helper.bootstrap.inputText(field = objForm("position"), dataBind = "value: position", args = 'class -> "span8", '_label -> Messages("link.position"))
@@ -30,8 +46,8 @@
 
 <script>
 $(function(){
-  // var view = LinkViewModel();
-  // ko.applyBindings(view);
+  var view = LinkViewModel();
+  ko.applyBindings(view, $("#links").get(0));
 
   var addLink = AddLinkViewModel();
   ko.applyBindings(addLink, $("#addLink").get(0));
