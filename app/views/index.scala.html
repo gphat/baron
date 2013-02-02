@@ -5,18 +5,21 @@
 
 @main(Messages("product.name")) {
 
-<a href="#addLink" role="button" class="btn" data-toggle="modal">@Messages("link.add.title")</a>
+<h1>@Messages("link.list.title")</h2>
+<a href="#addLink" role="button" class="btn pull-right" data-toggle="modal"><i class="icon-plus-sign"></i> @Messages("link.add.title")</a>
 <div id="links">
  <table class="table table-bordered table-striped table-hover">
   <thead>
    <tr>
-    <th>URL</th>
-    <th>Description</th>
+    <th style="width: 2em">@Messages("link.read")</th>
+    <th>@Messages("link.url")</th>
+    <th>@Messages("link.description")</th>
    </tr>
   </thead>
   <tbody data-bind="foreach: links()">
-   <tr>
-    <td data-bind="text: url"></td>
+   <tr data-bind="css: { 'read': read() }">
+    <td><input type="checkbox" data-bind="checked: read, click: doRead"></td>
+    <td><a data-bind="attr: { href: url }, text: url"></a></td>
     <td data-bind="text: description"></td>
    </tr>
   </tbody>

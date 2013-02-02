@@ -12,6 +12,7 @@ function processJsonError(resp) {
 
 function Link(data) {
   this.id       = ko.observable(data.id);
+  this.read     = ko.observable(data.read);
   this.url      = ko.observable(data.url);
   this.poster   = ko.observable(data.poster);
   this.org      = ko.observable(data.org);
@@ -24,12 +25,34 @@ function LinkViewModel() {
   var self = this;
   self.links = ko.observableArray([]);
 
-  $.getJSON("/api/link")
+  $.getJSON("/api/link/1")
   .done(function(data) {
     var mappedLinks = $.map(data, function(item) { return new Link(item) });
     self.links(mappedLinks);
   })
   .fail(function() { console.log("XXX Failed to retrieve links!") });
+
+  self.doRead = function (link) {
+
+    var action = "POST";
+    if(!link.read()) {
+      action = "DELETE"
+    }
+    $.ajax({
+      type: action,
+      url: "/api/link/" + link.id() + "/read/1",
+      dataType: "jsonp",
+    })
+      .success(function(data) {
+        var link = new Link(data);
+      })
+      .error(function(e) {
+        console.log(e);
+      })
+    // We return true so ko stops the event, the replace of the link
+    // in the success wil handle the checkbox.
+    return true;
+  }
 }
 
 function AddLinkViewModel() {
@@ -40,11 +63,9 @@ function AddLinkViewModel() {
   self.description = ko.observable("");
 
   self.doSubmit = function () {
-    console.log($("#add-link").serialize());
     $.ajax({
       type: "POST",
       url: "/api/link",
-      // contentType: "application/json; charset=utf-8",
       dataType: "jsonp",
       data: $("#add-link").serialize()
     })

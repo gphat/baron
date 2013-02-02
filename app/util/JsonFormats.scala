@@ -33,7 +33,7 @@ object JsonFormats {
       org = (json \ "org").as[Long],
       position = (json \ "position").as[Int],
       description = (json \ "description").as[String],
-      dateCreated = (json \ "date_created").as[Option[String]].map({ d => dateFormatterUTC.parseDateTime(d) }).getOrElse(new DateTime())
+      dateCreated = (json \ "dateCreated").as[Option[String]].map({ d => dateFormatterUTC.parseDateTime(d) }).getOrElse(new DateTime())
     )
 
     def writes(obj: Link): JsValue = {
@@ -44,7 +44,37 @@ object JsonFormats {
         "org"           -> JsNumber(obj.org),
         "position"      -> JsNumber(obj.position),
         "description"   -> JsString(obj.description),
-        "date_created"  -> JsString(dateFormatter.print(obj.dateCreated))
+        "dateCreated"  -> JsString(dateFormatter.print(obj.dateCreated))
+      )
+      toJson(edoc)
+    }
+  }
+
+  /**
+   * JSON conversion for UserLink
+   */
+  implicit object UserLinkFormat extends Format[UserLink] {
+    def reads(json: JsValue): UserLink = UserLink(
+      id = Id((json \ "id").as[Long]),
+      userId = (json \ "userId").as[Option[Long]],
+      url = (json \ "url").as[String],
+      poster = (json \ "poster").as[Long],
+      org = (json \ "org").as[Long],
+      position = (json \ "position").as[Int],
+      description = (json \ "description").as[String],
+      dateCreated = (json \ "dateCreated").as[Option[String]].map({ d => dateFormatterUTC.parseDateTime(d) }).getOrElse(new DateTime())
+    )
+
+    def writes(obj: UserLink): JsValue = {
+      val edoc: Map[String,JsValue] = Map(
+        "id"            -> JsNumber(obj.id.get),
+        "read"          -> JsBoolean(obj.read),
+        "url"           -> JsString(obj.url),
+        "poster"        -> JsNumber(obj.poster),
+        "org"           -> JsNumber(obj.org),
+        "position"      -> JsNumber(obj.position),
+        "description"   -> JsString(obj.description),
+        "dateCreated"  -> JsString(dateFormatter.print(obj.dateCreated))
       )
       toJson(edoc)
     }

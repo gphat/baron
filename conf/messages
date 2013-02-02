@@ -7,6 +7,8 @@ general.home=Home
 
 link.add.title=Add Link
 link.description=Description
+link.list.title=Links
 link.org=Organization
 link.position=Position
+link.read=Read
 link.url=URL

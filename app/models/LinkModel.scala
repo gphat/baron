@@ -10,7 +10,7 @@ import play.api.Play.current
 import play.Logger
 
 /**
- * Class for users in a group.
+ * Class for a link.
  */
 case class Link(
   id: Pk[Long] = NotAssigned,
@@ -22,17 +22,37 @@ case class Link(
   dateCreated: DateTime
 )
 
+/**
+ * Class for a user link.
+ */
+case class UserLink(
+  id: Pk[Long] = NotAssigned,
+  userId: Option[Long],
+  url: String,
+  poster: Long,
+  org: Long,
+  position: Long,
+  description: String,
+  dateCreated: DateTime
+) {
+  def read = this.userId.isDefined
+}
+
 object LinkModel {
 
-  val allQuery = SQL("SELECT * FROM links")
+  val allQuery = SQL("SELECT * FROM links ORDER BY position")
+  val allForUserQuery = SQL("SELECT * FROM links AS l LEFT JOIN user_links AS ul ON l.id = ul.link_id WHERE (ul.user_id = {user_id} OR ul.user_id IS NULL)")
   val getByIdQuery = SQL("SELECT * FROM links WHERE id={id}")
+  val getByIdForUserQuery = SQL("SELECT * FROM links AS l LEFT JOIN user_links AS ul ON l.id = ul.link_id WHERE (ul.user_id = {user_id} OR ul.user_id IS NULL) AND l.id={link_id}")
   val listQuery = SQL("SELECT * FROM links ORDER BY position LIMIT {offset},{count}")
   val listCountQuery = SQL("SELECT COUNT(*) FROM links")
   val insertQuery = SQL("INSERT INTO links (url, poster, org, position, description, date_created) VALUES ({url}, {poster}, {org}, {position}, {description}, UTC_TIMESTAMP())")
   val updateQuery = SQL("UPDATE links SET url={url}, poster={poster}, org={org}, position={position}, description={description} WHERE id={id}")
   val deleteQuery = SQL("DELETE FROM links WHERE id={id}")
+  val readQuery = SQL("INSERT IGNORE INTO user_links (user_id, link_id, date_created) VALUES ({user_id}, {link_id}, UTC_TIMESTAMP)")
+  val unreadQuery = SQL("DELETE FROM user_links WHERE link_id={link_id} AND user_id={user_id}")
 
-  // parser for retrieving a group
+  // parser for retrieving a link
   val link = {
     get[Pk[Long]]("id") ~
     get[String]("url") ~
@@ -45,8 +65,22 @@ object LinkModel {
     }
   }
 
+  // parser for retrieving a user link
+  val userLink = {
+    get[Pk[Long]]("id") ~
+    get[Option[Long]]("ul.user_id") ~
+    get[String]("url") ~
+    get[Long]("poster") ~
+    get[Long]("org") ~
+    get[Long]("position") ~
+    get[String]("description") ~
+    get[DateTime]("l.date_created") map {
+      case id~userId~url~poster~org~position~description~dateCreated => UserLink(id, userId, url, poster, org, position, description, dateCreated)
+    }
+  }
+
   /**
-   * Create a group.
+   * Create a link.
    */
   def create(link: Link): Option[Link] = {
 
@@ -87,6 +121,19 @@ object LinkModel {
     }
   }
 
+  /**
+   * Retrieve a link by id for a user.
+   */
+  def getByIdForUser(linkId: Long, userId: Long) : Option[UserLink] = {
+
+    DB.withConnection { implicit conn =>
+      getByIdForUserQuery.on('user_id -> userId, 'link_id -> linkId).as(userLink.singleOpt)
+    }
+  }
+
+  /**
+   * Get ALL THE LINKS
+   */
   def getAll: List[Link] = {
 
     DB.withConnection { implicit conn =>
@@ -94,24 +141,62 @@ object LinkModel {
     }
   }
 
+  /**
+   * Get all the links for a user
+   */
+  def getAllForUser(userId: Long): List[UserLink] = {
+
+    DB.withConnection { implicit conn =>
+      allForUserQuery.on('user_id -> userId).as(userLink *)
+    }
+  }
+
   def list(page: Int = 1, count: Int = 10) : Page[Link] = {
 
-      val offset = count * (page - 1)
+    val offset = count * (page - 1)
 
-      DB.withConnection { implicit conn =>
-        val links = listQuery.on(
-          'count  -> count,
-          'offset -> offset
-        ).as(link *)
+    DB.withConnection { implicit conn =>
+      val links = listQuery.on(
+        'count  -> count,
+        'offset -> offset
+      ).as(link *)
 
-        val totalRows = listCountQuery.as(scalar[Long].single)
+      val totalRows = listCountQuery.as(scalar[Long].single)
 
-        Page(links, page, count, totalRows)
-      }
+      Page(links, page, count, totalRows)
+    }
   }
 
   /**
-   * Update a group.  Returns the changed group.
+   * Mark a link as read by a user.
+   */
+   def read(id: Long, userId: Long): Option[UserLink] = {
+    DB.withConnection { implicit conn =>
+      val ulid = readQuery.on(
+        'link_id -> id,
+        'user_id -> userId
+      ).executeInsert()
+      getByIdForUser(id, userId)
+    }
+   }
+
+  /**
+   * Unmark a link as read by a user.
+   */
+   def unread(id: Long, userId: Long): Option[UserLink] = {
+    DB.withConnection { implicit conn =>
+      getByIdForUser(id, userId).map({ l =>
+        unreadQuery.on(
+          'link_id -> id,
+          'user_id -> userId
+        ).execute()
+        l
+      })
+    }
+   }
+
+  /**
+   * Update a link. Returns the changed link.
    */
   def update(id: Long, link: Link): Option[Link] = {
 

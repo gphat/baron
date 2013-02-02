@@ -43,19 +43,6 @@ object Link extends Controller {
         }).getOrElse(BadRequest(Json.toJson(Map("error" -> Messages("link.add.failure")))))
       }
     )
-
-
-    // request.body.asJson match {
-    //   case Some(j) => {
-    //     val link: Link = Json.fromJson[Link](j)
-    //     val resp = Json.toJson(LinkModel.create(link))
-    //     callback match {
-    //       case Some(cb) => Ok(Jsonp(cb, resp))
-    //       case _ => Ok(resp)
-    //     }
-    //   }
-    //   case None => BadRequest("Expecing JSON Data")
-    // }
   }
 
   /**
@@ -73,10 +60,36 @@ object Link extends Controller {
   /**
    * Get all links.
    */
-  def list(callback: Option[String]) = Action { implicit request =>
-    val links = LinkModel.getAll
+  def list(userId: Long, callback: Option[String]) = Action { implicit request =>
+    val links = LinkModel.getAllForUser(userId)
 
     val json = Json.toJson(links)
+    callback match {
+      case Some(callback) => Ok(Jsonp(callback, json))
+      case None => Ok(json)
+    }
+  }
+
+  /**
+   * Mark a link as read for a user.
+   */
+  def read(linkId: Long, userId: Long, callback: Option[String]) = Action { implicit request =>
+    val ul = LinkModel.read(linkId, userId)
+
+    val json = Json.toJson(ul)
+    callback match {
+      case Some(callback) => Ok(Jsonp(callback, json))
+      case None => Ok(json)
+    }
+  }
+
+  /**
+   * Unmark a link as read for a user.
+   */
+  def unRead(linkId: Long, userId: Long, callback: Option[String]) = Action { implicit request =>
+    val ul = LinkModel.unread(linkId, userId)
+    println("HASDAJSDASD");
+    val json = Json.toJson(ul)
     callback match {
       case Some(callback) => Ok(Jsonp(callback, json))
       case None => Ok(json)
