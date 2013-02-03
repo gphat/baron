@@ -9,7 +9,7 @@
  <div class="span3">
   <div class="well sidebar-nav">
    <ul class="nav nav-list categories">
-    <li data-bind="css: { active: category() == null }"><a data-bind="click: changeCategory">All</a></li>
+    <li data-bind="css: { active: category() == null }"><a data-bind="click: changeCategory">@Messages("category.all")</a></li>
     <!-- ko foreach: categories -->
     <li data-bind="css: { active: name() === category() }"><a data-bind="click: changeCategory, text: name"></a></li>
     <!-- /ko -->

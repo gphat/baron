@@ -31,13 +31,6 @@ function LinkViewModel(category, categories, links) {
   self.categories = ko.observableArray($.map(categories, function(item) { return new Category(item); }));
   self.links = ko.observableArray($.map(links, function(item) { return new Link(item); }));
 
-  // $.getJSON("/api/category")
-  // .done(function(data) {
-  //   var categories = $.map(data, function(item) { return new Category(item); })
-  //   self.categories(categories);
-  // })
-  // .fail(function() { console.log("XXX Failed to retrieve categories!") });
-
   self.changeCategory = function(category) {
     var catQuery = "";
     if(category !== null && typeof category !== "undefined") {

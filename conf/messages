@@ -1,9 +1,11 @@
-product.name=Baron
+category.all=All
 
 general.about=About
 general.add=Add
 general.cancel=Cancel
 general.home=Home
+
+product.name=Baron
 
 link.add.title=Add Link
 link.description=Description
