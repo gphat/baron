@@ -1,4 +1,4 @@
-@(objForm: Form[(models.Link)])
+@(category: Option[String], categories: String, links: String, objForm: Form[(models.Link)])
 
 @import helper._
 @import helper.bootstrap._
@@ -8,8 +8,11 @@
 <div class="row-fluid" id="links">
  <div class="span3">
   <div class="well sidebar-nav">
-   <ul class="nav nav-list categories" data-bind="foreach: categories">
-    <li><a data-bind="click: changeCategory, css: { active: name === category() }, text: name"></a></li>
+   <ul class="nav nav-list categories">
+    <li data-bind="css: { active: category() == null }"><a data-bind="click: changeCategory">All</a></li>
+    <!-- ko foreach: categories -->
+    <li data-bind="css: { active: name() === category() }"><a data-bind="click: changeCategory, text: name"></a></li>
+    <!-- /ko -->
    </ul>
   </div>
  </div>
@@ -60,7 +63,7 @@
 
 <script>
 $(function(){
-  var view = LinkViewModel();
+  var view = LinkViewModel(@Html(category.map({ c => "\"" + c + "\"" }).getOrElse("null")), @Html(categories), @Html(links));
   ko.applyBindings(view);
 });
 </script>

@@ -25,24 +25,28 @@ function Link(data) {
   this.dateCreated = ko.observable(data.dateCreated);
 }
 
-function LinkViewModel() {
+function LinkViewModel(category, categories, links) {
   var self = this;
-  self.category = ko.observable();
-  self.categories = ko.observableArray([]);
-  self.links = ko.observableArray([]);
+  self.category = ko.observable(category);
+  self.categories = ko.observableArray($.map(categories, function(item) { return new Category(item); }));
+  self.links = ko.observableArray($.map(links, function(item) { return new Link(item); }));
 
-  $.getJSON("/api/category")
-  .done(function(data) {
-    var categories = $.map(data, function(item) { return new Category(item); })
-    self.categories(categories);
-  })
-  .fail(function() { console.log("XXX Failed to retrieve categories!") });
+  // $.getJSON("/api/category")
+  // .done(function(data) {
+  //   var categories = $.map(data, function(item) { return new Category(item); })
+  //   self.categories(categories);
+  // })
+  // .fail(function() { console.log("XXX Failed to retrieve categories!") });
 
   self.changeCategory = function(category) {
     var catQuery = "";
-    if(category !== null) {
+    if(category !== null && typeof category !== "undefined") {
       self.category(category.name());
       catQuery = "?category=" + self.category();
+      history.pushState(null, null, catQuery);
+    } else {
+      self.category(null);
+      history.pushState(null, null, "/");
     }
 
     $.getJSON("/api/link/1" + catQuery)
@@ -92,5 +96,5 @@ function LinkViewModel() {
       return false;
   }
 
-  self.changeCategory(null);
+  //self.changeCategory(null);
 }
