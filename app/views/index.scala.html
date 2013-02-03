@@ -15,6 +15,9 @@
     <!-- /ko -->
    </ul>
   </div>
+  <div id="loading" style="display: none">
+   <img src="@routes.Assets.at("img/loading.gif")">
+  </div>
  </div>
  <div class="span9">
   <h1>@Messages("link.list.title") <span data-bind="visible: category() != null">for <span data-bind="text: category"></span></span></h1>
@@ -65,6 +68,14 @@
 $(function(){
   var view = LinkViewModel(@Html(category.map({ c => "\"" + c + "\"" }).getOrElse("null")), @Html(categories), @Html(links));
   ko.applyBindings(view);
+  // Using jQuery for Ajax loading indicator - nothing to do with Knockout
+  $(document).ajaxStart(function() {
+    console.log("START");
+    $("#loading").show(0);
+  }).ajaxComplete(function() {
+    console.log("DONE");
+    $("#loading").hide(0)
+  });
 });
 </script>
 }
