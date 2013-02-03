@@ -9,7 +9,7 @@
  <div class="span3">
   <div class="well sidebar-nav">
    <ul class="nav nav-list" data-bind="foreach: categories()">
-    <li><a data-bind="attr: { href: url() }, text: name"></a></li>
+    <li data-bind="css: { active: name === category() }"><a data-bind="click: changeCategory, text: name"></a></li>
    </ul>
   </div>
  </div>

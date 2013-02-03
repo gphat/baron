@@ -70,8 +70,8 @@ object Link extends Controller {
   /**
    * Get all links.
    */
-  def list(userId: Long, callback: Option[String]) = Action { implicit request =>
-    val links = LinkModel.getAllForUser(userId)
+  def list(userId: Long, category: Option[String], callback: Option[String]) = Action { implicit request =>
+    val links = LinkModel.getAllForUser(userId, category)
 
     val json = Json.toJson(links)
     callback match {

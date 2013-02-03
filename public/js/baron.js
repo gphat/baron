@@ -12,9 +12,6 @@ function processJsonError(resp) {
 
 function Category(data) {
   this.name = ko.observable(data.name);
-  this.url = ko.computed(function() {
-    return "?query=" + this.name();
-  }, this);
 }
 
 function Link(data) {
@@ -30,15 +27,9 @@ function Link(data) {
 
 function LinkViewModel() {
   var self = this;
+  self.category = ko.observable();
   self.categories = ko.observableArray([]);
   self.links = ko.observableArray([]);
-
-  $.getJSON("/api/link/1")
-  .done(function(data) {
-    var mappedLinks = $.map(data, function(item) { return new Link(item) });
-    self.links(mappedLinks);
-  })
-  .fail(function() { console.log("XXX Failed to retrieve links!") });
 
   $.getJSON("/api/category")
   .done(function(data) {
@@ -47,7 +38,23 @@ function LinkViewModel() {
   })
   .fail(function() { console.log("XXX Failed to retrieve categories!") });
 
-  self.doRead = function (link) {
+
+  self.changeCategory = function(category) {
+    var catQuery = "";
+    if(category !== null) {
+      self.category(category);
+      catQuery = "?category=" + self.category().name();
+    }
+
+    $.getJSON("/api/link/1" + catQuery)
+    .done(function(data) {
+      var mappedLinks = $.map(data, function(item) { return new Link(item) });
+      self.links(mappedLinks);
+    })
+    .fail(function() { console.log("XXX Failed to retrieve links!") });
+  }
+
+  self.doRead = function(link) {
 
     var action = "POST";
     if(!link.read()) {
@@ -68,6 +75,8 @@ function LinkViewModel() {
     // in the success wil handle the checkbox.
     return true;
   }
+
+  self.changeCategory(null);
 }
 
 function AddLinkViewModel() {

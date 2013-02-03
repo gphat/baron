@@ -48,6 +48,7 @@ case class UserLink(
 object LinkModel {
 
   val allQuery = SQL("SELECT * FROM links ORDER BY position")
+  val allForCategoryForUserQuery = SQL("SELECT * FROM links AS l LEFT JOIN user_links AS ul ON l.id = ul.link_id WHERE (ul.user_id = {user_id} OR ul.user_id IS NULL) AND l.category={category}")
   val allForUserQuery = SQL("SELECT * FROM links AS l LEFT JOIN user_links AS ul ON l.id = ul.link_id WHERE (ul.user_id = {user_id} OR ul.user_id IS NULL)")
   val allCategoriesQuery = SQL("SELECT DISTINCT(category) FROM links ORDER BY category")
   val getByIdQuery = SQL("SELECT * FROM links WHERE id={id}")
@@ -164,10 +165,14 @@ object LinkModel {
   /**
    * Get all the links for a user
    */
-  def getAllForUser(userId: Long): List[UserLink] = {
+  def getAllForUser(userId: Long, category: Option[String]): List[UserLink] = {
 
     DB.withConnection { implicit conn =>
-      allForUserQuery.on('user_id -> userId).as(userLink *)
+      category.map({ c =>
+        allForCategoryForUserQuery.on('user_id -> userId, 'category -> c).as(userLink *)
+      }).getOrElse(
+        allForUserQuery.on('user_id -> userId).as(userLink *)
+      )
     }
   }
 

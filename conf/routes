@@ -7,7 +7,7 @@ GET     /                           controllers.Application.index
 
 GET     /api/category               controllers.api.Link.categories(query: Option[String], callback: Option[String])
 
-GET     /api/link/:userId           controllers.api.Link.list(userId: Long, callback: Option[String])
+GET     /api/link/:userId           controllers.api.Link.list(userId: Long, category: Option[String], callback: Option[String])
 POST    /api/link                   controllers.api.Link.add(callback: Option[String])
 DELETE  /api/link/:id               controllers.api.Link.delete(id: Long, callback: Option[String])
 POST    /api/link/:id/read/:userId  controllers.api.Link.read(id: Long, userId: Long, callback: Option[String])
