@@ -97,7 +97,6 @@ object Link extends Controller {
    */
   def unRead(linkId: Long, userId: Long, callback: Option[String]) = Action { implicit request =>
     val ul = LinkModel.unread(linkId, userId)
-    println("HASDAJSDASD");
     val json = Json.toJson(ul)
     callback match {
       case Some(callback) => Ok(Jsonp(callback, json))
