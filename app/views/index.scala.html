@@ -40,9 +40,8 @@
    </table>
   </div>
  </div>
-</div>
 
-<div id="addLink" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="addLink" aria-hidden="true">
+ <div id="addLink" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="addLink" aria-hidden="true">
  @helper.bootstrap.form(action = controllers.api.routes.Link.add(None), dataBind="submit: doSubmit", args = 'class -> "form-horizontal", 'id -> "add-link") {
   <div class="modal-header">
    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -62,6 +61,8 @@
    <button type="submit" class="btn btn-primary"><i class="icon-plus-sign icon-white"></i> @Messages("general.add")</button>
   </div>
  }
+</div>
+
 </div>
 
 <script>
