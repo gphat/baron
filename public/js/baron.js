@@ -38,20 +38,20 @@ function LinkViewModel() {
   })
   .fail(function() { console.log("XXX Failed to retrieve categories!") });
 
-
   self.changeCategory = function(category) {
     var catQuery = "";
     if(category !== null) {
-      self.category(category);
-      catQuery = "?category=" + self.category().name();
+      self.category(category.name());
+      catQuery = "?category=" + self.category();
     }
 
     $.getJSON("/api/link/1" + catQuery)
     .done(function(data) {
-      var mappedLinks = $.map(data, function(item) { return new Link(item) });
+      var mappedLinks = $.map(data, function(item) { return new Link(item); });
       self.links(mappedLinks);
     })
     .fail(function() { console.log("XXX Failed to retrieve links!") });
+    return true;
   }
 
   self.doRead = function(link) {
@@ -76,16 +76,6 @@ function LinkViewModel() {
     return true;
   }
 
-  self.changeCategory(null);
-}
-
-function AddLinkViewModel() {
-  var self = this;
-  self.url = ko.observable("");
-  self.position = ko.observable();
-  self.category = ko.observable();
-  self.description = ko.observable("");
-
   self.doSubmit = function () {
     $.ajax({
       type: "POST",
@@ -94,11 +84,13 @@ function AddLinkViewModel() {
       data: $("#add-link").serialize()
     })
       .success(function(data) {
-        console.log(data);
         $('#addLink').modal('hide')
       })
       .error(function(e) {
         processJsonError(e.responseText);
       })
+      return false;
   }
+
+  self.changeCategory(null);
 }
