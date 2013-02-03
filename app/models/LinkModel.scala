@@ -10,13 +10,20 @@ import play.api.Play.current
 import play.Logger
 
 /**
+ * Class for a category.
+ */
+case class Category(
+  name: String
+)
+
+/**
  * Class for a link.
  */
 case class Link(
   id: Pk[Long] = NotAssigned,
   url: String,
   poster: Long,
-  org: Long,
+  category: String,
   position: Long,
   description: String,
   dateCreated: DateTime
@@ -30,7 +37,7 @@ case class UserLink(
   userId: Option[Long],
   url: String,
   poster: Long,
-  org: Long,
+  category: String,
   position: Long,
   description: String,
   dateCreated: DateTime
@@ -42,26 +49,31 @@ object LinkModel {
 
   val allQuery = SQL("SELECT * FROM links ORDER BY position")
   val allForUserQuery = SQL("SELECT * FROM links AS l LEFT JOIN user_links AS ul ON l.id = ul.link_id WHERE (ul.user_id = {user_id} OR ul.user_id IS NULL)")
+  val allCategoriesQuery = SQL("SELECT DISTINCT(category) FROM links ORDER BY category")
   val getByIdQuery = SQL("SELECT * FROM links WHERE id={id}")
   val getByIdForUserQuery = SQL("SELECT * FROM links AS l LEFT JOIN user_links AS ul ON l.id = ul.link_id WHERE (ul.user_id = {user_id} OR ul.user_id IS NULL) AND l.id={link_id}")
   val listQuery = SQL("SELECT * FROM links ORDER BY position LIMIT {offset},{count}")
   val listCountQuery = SQL("SELECT COUNT(*) FROM links")
-  val insertQuery = SQL("INSERT INTO links (url, poster, org, position, description, date_created) VALUES ({url}, {poster}, {org}, {position}, {description}, UTC_TIMESTAMP())")
-  val updateQuery = SQL("UPDATE links SET url={url}, poster={poster}, org={org}, position={position}, description={description} WHERE id={id}")
+  val insertQuery = SQL("INSERT INTO links (url, poster, category, position, description, date_created) VALUES ({url}, {poster}, {category}, {position}, {description}, UTC_TIMESTAMP())")
+  val updateQuery = SQL("UPDATE links SET url={url}, poster={poster}, category={category}, position={position}, description={description} WHERE id={id}")
   val deleteQuery = SQL("DELETE FROM links WHERE id={id}")
   val readQuery = SQL("INSERT IGNORE INTO user_links (user_id, link_id, date_created) VALUES ({user_id}, {link_id}, UTC_TIMESTAMP)")
   val unreadQuery = SQL("DELETE FROM user_links WHERE link_id={link_id} AND user_id={user_id}")
+
+  val category = {
+    get[String]("links.category") map { case name => Category(name) }
+  }
 
   // parser for retrieving a link
   val link = {
     get[Pk[Long]]("id") ~
     get[String]("url") ~
     get[Long]("poster") ~
-    get[Long]("org") ~
+    get[String]("category") ~
     get[Long]("position") ~
     get[String]("description") ~
     get[DateTime]("date_created") map {
-      case id~url~poster~org~position~description~dateCreated => Link(id, url, poster, org, position, description, dateCreated)
+      case id~url~poster~category~position~description~dateCreated => Link(id, url, poster, category, position, description, dateCreated)
     }
   }
 
@@ -71,11 +83,11 @@ object LinkModel {
     get[Option[Long]]("ul.user_id") ~
     get[String]("url") ~
     get[Long]("poster") ~
-    get[Long]("org") ~
+    get[String]("category") ~
     get[Long]("position") ~
     get[String]("description") ~
     get[DateTime]("l.date_created") map {
-      case id~userId~url~poster~org~position~description~dateCreated => UserLink(id, userId, url, poster, org, position, description, dateCreated)
+      case id~userId~url~poster~category~position~description~dateCreated => UserLink(id, userId, url, poster, category, position, description, dateCreated)
     }
   }
 
@@ -88,7 +100,7 @@ object LinkModel {
       insertQuery.on(
         'url        -> link.url,
         'poster     -> link.poster,
-        'org        -> link.org,
+        'category   -> link.category,
         'position   -> link.position,
         'description-> link.description
       ).executeInsert()
@@ -135,9 +147,17 @@ object LinkModel {
    * Get ALL THE LINKS
    */
   def getAll: List[Link] = {
-
     DB.withConnection { implicit conn =>
       allQuery.as(link *)
+    }
+  }
+
+  /**
+   * Get all categories.
+   */
+  def getAllCategories: List[Category] = {
+    DB.withConnection { implicit conn =>
+      allCategoriesQuery.as(category *)
     }
   }
 
@@ -205,7 +225,7 @@ object LinkModel {
         'id         -> id,
         'url        -> link.url,
         'poster     -> link.poster,
-        'org        -> link.org,
+        'category   -> link.category,
         'position   -> link.position,
         'description-> link.description
       ).execute

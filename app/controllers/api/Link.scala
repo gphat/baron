@@ -21,7 +21,7 @@ object Link extends Controller {
       "id"                  -> ignored(NotAssigned:Pk[Long]),
       "url"                 -> nonEmptyText,
       "poster"              -> longNumber,
-      "org"                 -> longNumber,
+      "category"            -> text,
       "position"            -> longNumber,
       "description"         -> text,
       "date_created"        -> ignored(new DateTime())
@@ -43,6 +43,16 @@ object Link extends Controller {
         }).getOrElse(BadRequest(Json.toJson(Map("error" -> Messages("link.add.failure")))))
       }
     )
+  }
+
+  /**
+   * Get categories
+   */
+  def categories(query: Option[String], callback: Option[String]) = Action { implicit request =>
+    val json = Json.toJson(LinkModel.getAllCategories)
+    callback.map({ cb =>
+      Ok(Jsonp(cb, json))
+    }).getOrElse(Ok(json))
   }
 
   /**

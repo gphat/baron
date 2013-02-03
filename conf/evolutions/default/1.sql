@@ -4,7 +4,7 @@ CREATE TABLE links (
   id INT UNSIGNED AUTO_INCREMENT NOT NULL,
   url TEXT NOT NULL,
   poster INT UNSIGNED,
-  org INT UNSIGNED,
+  category VARCHAR(128) NOT NULL,
   position INT UNSIGNED,
   description TEXT,
   date_created DATETIME NOT NULL,

@@ -5,25 +5,36 @@
 
 @main(Messages("product.name")) {
 
-<h1>@Messages("link.list.title")</h2>
-<a href="#addLink" role="button" class="btn pull-right" data-toggle="modal"><i class="icon-plus-sign"></i> @Messages("link.add.title")</a>
-<div id="links">
- <table class="table table-bordered table-striped table-hover">
-  <thead>
-   <tr>
-    <th style="width: 2em">@Messages("link.read")</th>
-    <th>@Messages("link.url")</th>
-    <th>@Messages("link.description")</th>
-   </tr>
-  </thead>
-  <tbody data-bind="foreach: links()">
-   <tr data-bind="css: { 'read': read() }">
-    <td><input type="checkbox" data-bind="checked: read, click: doRead"></td>
-    <td><a data-bind="attr: { href: url }, text: url"></a></td>
-    <td data-bind="text: description"></td>
-   </tr>
-  </tbody>
- </table>
+<div class="row-fluid" id="links">
+ <div class="span3">
+  <div class="well sidebar-nav">
+   <ul class="nav nav-list" data-bind="foreach: categories()">
+    <li><a data-bind="attr: { href: url() }, text: name"></a></li>
+   </ul>
+  </div>
+ </div>
+ <div class="span9">
+  <h1>@Messages("link.list.title")</h2>
+  <a href="#addLink" role="button" class="btn pull-right" data-toggle="modal"><i class="icon-plus-sign"></i> @Messages("link.add.title")</a>
+  <div>
+   <table class="table table-bordered table-striped table-hover">
+    <thead>
+     <tr>
+      <th style="width: 2em">@Messages("link.read")</th>
+      <th>@Messages("link.url")</th>
+      <th>@Messages("link.description")</th>
+     </tr>
+    </thead>
+    <tbody data-bind="foreach: links()">
+     <tr data-bind="css: { 'read': read() }">
+      <td><input type="checkbox" data-bind="checked: read, click: doRead"></td>
+      <td><a data-bind="attr: { href: url }, text: url"></a></td>
+      <td data-bind="text: description"></td>
+     </tr>
+    </tbody>
+   </table>
+  </div>
+ </div>
 </div>
 <div id="addLink" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="addLink" aria-hidden="true">
  @helper.bootstrap.form(action = controllers.api.routes.Link.add(None), dataBind="submit: doSubmit", args = 'class -> "form-horizontal", 'id -> "add-link") {
@@ -35,7 +46,7 @@
    <fieldset>
     <input type="hidden" name="poster" id="poster" value="1">
     @helper.bootstrap.inputText(field = objForm("url"), dataBind = "value: url", args = 'class -> "span8", '_label -> Messages("link.url"))
-    @helper.bootstrap.inputText(field = objForm("org"), dataBind = "value: org", args = 'class -> "span8", '_label -> Messages("link.org"))
+    @helper.bootstrap.inputText(field = objForm("category"), dataBind = "value: category", args = 'class -> "span8", '_label -> Messages("link.category"))
     @helper.bootstrap.inputText(field = objForm("position"), dataBind = "value: position", args = 'class -> "span8", '_label -> Messages("link.position"))
     @helper.bootstrap.textarea(field = objForm("description"), dataBind="value: description", args = 'class -> "span8", 'rows -> 5, '_label -> Messages("link.description"))
  </fieldset>

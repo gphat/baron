@@ -10,12 +10,19 @@ function processJsonError(resp) {
   }
 }
 
+function Category(data) {
+  this.name = ko.observable(data.name);
+  this.url = ko.computed(function() {
+    return "?query=" + this.name();
+  }, this);
+}
+
 function Link(data) {
   this.id       = ko.observable(data.id);
   this.read     = ko.observable(data.read);
   this.url      = ko.observable(data.url);
   this.poster   = ko.observable(data.poster);
-  this.org      = ko.observable(data.org);
+  this.category = ko.observable(data.category);
   this.position = ko.observable(data.position);
   this.description = ko.observable(data.description);
   this.dateCreated = ko.observable(data.dateCreated);
@@ -23,6 +30,7 @@ function Link(data) {
 
 function LinkViewModel() {
   var self = this;
+  self.categories = ko.observableArray([]);
   self.links = ko.observableArray([]);
 
   $.getJSON("/api/link/1")
@@ -31,6 +39,13 @@ function LinkViewModel() {
     self.links(mappedLinks);
   })
   .fail(function() { console.log("XXX Failed to retrieve links!") });
+
+  $.getJSON("/api/category")
+  .done(function(data) {
+    var categories = $.map(data, function(item) { return new Category(item); })
+    self.categories(categories);
+  })
+  .fail(function() { console.log("XXX Failed to retrieve categories!") });
 
   self.doRead = function (link) {
 
@@ -59,7 +74,7 @@ function AddLinkViewModel() {
   var self = this;
   self.url = ko.observable("");
   self.position = ko.observable();
-  self.org = ko.observable();
+  self.category = ko.observable();
   self.description = ko.observable("");
 
   self.doSubmit = function () {

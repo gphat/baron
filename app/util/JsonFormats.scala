@@ -23,6 +23,22 @@ object JsonFormats {
   private def optionStringtoJsValue(maybeId: Option[String]) = maybeId.map({ s => JsString(s) }).getOrElse(JsNull)
 
   /**
+   * JSON conversion for Category
+   */
+  implicit object CategoryFormat extends Format[Category] {
+    def reads(json: JsValue): Category = Category(
+      name = (json \ "name").as[String]
+    )
+
+    def writes(obj: Category): JsValue = {
+      val edoc: Map[String,JsValue] = Map(
+        "name" -> JsString(obj.name)
+      )
+      toJson(edoc)
+    }
+  }
+
+  /**
    * JSON conversion for Link
    */
   implicit object LinkFormat extends Format[Link] {
@@ -30,7 +46,7 @@ object JsonFormats {
       id = Id((json \ "id").as[Long]),
       url = (json \ "url").as[String],
       poster = (json \ "poster").as[Long],
-      org = (json \ "org").as[Long],
+      category = (json \ "category").as[String],
       position = (json \ "position").as[Int],
       description = (json \ "description").as[String],
       dateCreated = (json \ "dateCreated").as[Option[String]].map({ d => dateFormatterUTC.parseDateTime(d) }).getOrElse(new DateTime())
@@ -41,10 +57,10 @@ object JsonFormats {
         "id"            -> JsNumber(obj.id.get),
         "url"           -> JsString(obj.url),
         "poster"        -> JsNumber(obj.poster),
-        "org"           -> JsNumber(obj.org),
+        "category"      -> JsString(obj.category),
         "position"      -> JsNumber(obj.position),
         "description"   -> JsString(obj.description),
-        "dateCreated"  -> JsString(dateFormatter.print(obj.dateCreated))
+        "dateCreated"   -> JsString(dateFormatter.print(obj.dateCreated))
       )
       toJson(edoc)
     }
@@ -59,7 +75,7 @@ object JsonFormats {
       userId = (json \ "userId").as[Option[Long]],
       url = (json \ "url").as[String],
       poster = (json \ "poster").as[Long],
-      org = (json \ "org").as[Long],
+      category = (json \ "category").as[String],
       position = (json \ "position").as[Int],
       description = (json \ "description").as[String],
       dateCreated = (json \ "dateCreated").as[Option[String]].map({ d => dateFormatterUTC.parseDateTime(d) }).getOrElse(new DateTime())
@@ -71,7 +87,7 @@ object JsonFormats {
         "read"          -> JsBoolean(obj.read),
         "url"           -> JsString(obj.url),
         "poster"        -> JsNumber(obj.poster),
-        "org"           -> JsNumber(obj.org),
+        "category"      -> JsString(obj.category),
         "position"      -> JsNumber(obj.position),
         "description"   -> JsString(obj.description),
         "dateCreated"  -> JsString(dateFormatter.print(obj.dateCreated))
