@@ -1,4 +1,3 @@
-This is your new Play 2.0 application
-=====================================
+Needed
 
-This file will be packaged with your application, when using `play dist`.
+* Refresh categories on save

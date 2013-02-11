@@ -71,10 +71,8 @@ $(function(){
   ko.applyBindings(view);
   // Using jQuery for Ajax loading indicator - nothing to do with Knockout
   $(document).ajaxStart(function() {
-    console.log("START");
     $("#loading").show(0);
   }).ajaxComplete(function() {
-    console.log("DONE");
     $("#loading").hide(0)
   });
 });

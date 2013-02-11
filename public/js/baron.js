@@ -81,7 +81,9 @@ function LinkViewModel(category, categories, links) {
       data: $("#add-link").serialize()
     })
       .success(function(data) {
-        $('#addLink').modal('hide')
+        $('#addLink').modal('hide');
+        $('#addLink').find('input,textarea').val("");
+        self.changeCategory();
       })
       .error(function(e) {
         processJsonError(e.responseText);
