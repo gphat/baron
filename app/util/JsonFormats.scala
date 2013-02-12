@@ -26,9 +26,9 @@ object JsonFormats {
    * JSON conversion for Category
    */
   implicit object CategoryFormat extends Format[Category] {
-    def reads(json: JsValue): Category = Category(
+    def reads(json: JsValue): JsResult[Category] = JsSuccess(Category(
       name = (json \ "name").as[String]
-    )
+    ))
 
     def writes(obj: Category): JsValue = {
       val edoc: Map[String,JsValue] = Map(
@@ -42,7 +42,7 @@ object JsonFormats {
    * JSON conversion for Link
    */
   implicit object LinkFormat extends Format[Link] {
-    def reads(json: JsValue): Link = Link(
+    def reads(json: JsValue): JsResult[Link] = JsSuccess(Link(
       id = Id((json \ "id").as[Long]),
       url = (json \ "url").as[String],
       poster = (json \ "poster").as[Long],
@@ -50,7 +50,7 @@ object JsonFormats {
       position = (json \ "position").as[Int],
       description = (json \ "description").as[String],
       dateCreated = (json \ "dateCreated").as[Option[String]].map({ d => dateFormatterUTC.parseDateTime(d) }).getOrElse(new DateTime())
-    )
+    ))
 
     def writes(obj: Link): JsValue = {
       val edoc: Map[String,JsValue] = Map(
@@ -70,7 +70,7 @@ object JsonFormats {
    * JSON conversion for UserLink
    */
   implicit object UserLinkFormat extends Format[UserLink] {
-    def reads(json: JsValue): UserLink = UserLink(
+    def reads(json: JsValue): JsResult[UserLink] = JsSuccess(UserLink(
       id = Id((json \ "id").as[Long]),
       userId = (json \ "userId").as[Option[Long]],
       url = (json \ "url").as[String],
@@ -79,7 +79,7 @@ object JsonFormats {
       position = (json \ "position").as[Int],
       description = (json \ "description").as[String],
       dateCreated = (json \ "dateCreated").as[Option[String]].map({ d => dateFormatterUTC.parseDateTime(d) }).getOrElse(new DateTime())
-    )
+    ))
 
     def writes(obj: UserLink): JsValue = {
       val edoc: Map[String,JsValue] = Map(
