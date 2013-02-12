@@ -11,7 +11,7 @@ object ApplicationBuild extends Build {
   val appDependencies = Seq(
     jdbc,
     anorm,
-    "mysql"         % "mysql-connector-java"    % "5.1.22",
+    "mysql"         % "mysql-connector-java"    % "5.1.23",
     "joda-time"     % "joda-time"               % "2.1"
   )
 
