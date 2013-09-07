@@ -30,15 +30,12 @@ object Link extends Controller {
   /**
    * Add a link.
    */
-  def add(callback: Option[String]) = Action { implicit request =>
+  def add = Action { implicit request =>
     addLinkForm.bindFromRequest.fold(
       errors => BadRequest(errors.errorsAsJson),
       value => {
         LinkModel.create(value).map({ link =>
-          val json = Json.toJson(link)
-          // Inference goes nuts here unless we type this result
-          val res: Result = callback.map({ cb => Ok(Jsonp(cb, json)) }).getOrElse(Ok(json))
-          res
+          Ok(Json.toJson(link))
         }).getOrElse(BadRequest(Json.toJson(Map("error" -> Messages("link.add.failure")))))
       }
     )
@@ -47,60 +44,50 @@ object Link extends Controller {
   /**
    * Get categories
    */
-  def categories(query: Option[String], callback: Option[String]) = Action { implicit request =>
-    val json = Json.toJson(LinkModel.getAllCategories)
-    callback.map({ cb =>
-      Ok(Jsonp(cb, json))
-    }).getOrElse(Ok(json))
+  def categories(query: Option[String]) = Action { implicit request =>
+    Ok(Json.toJson(LinkModel.getAllCategories))
   }
 
   /**
    * Remove a link.
    */
-  def delete(id: Long, callback: Option[String]) = Action { implicit request =>
+  def delete(id: Long) = Action { implicit request =>
 
     val link = LinkModel.delete(id)
-    val json = Json.toJson(link)
-    callback.map({ cb =>
-      Ok(Jsonp(cb, json))
-    }).getOrElse(Ok(json))
+    Ok(Json.obj("status" -> "OK"))
+  }
+
+  /**
+   * Get a specific link
+   */
+  def item(id: Long) = Action { implicit request =>
+    LinkModel.getById(id).map({ link =>
+      val json = Json.toJson(link)
+      Ok(json)
+    }).getOrElse(NotFound(Json.obj("status" -> "KO", "message" -> "api.unknown.entity")))
   }
 
   /**
    * Get all links.
    */
-  def list(userId: Long, category: Option[String], callback: Option[String]) = Action { implicit request =>
-    val links = LinkModel.getAllForUser(userId, category)
-
-    val json = Json.toJson(links)
-    callback match {
-      case Some(callback) => Ok(Jsonp(callback, json))
-      case None => Ok(json)
-    }
+  def list(category: Option[String]) = Action { implicit request =>
+    Ok(Json.toJson(LinkModel.getAll))
   }
 
   /**
    * Mark a link as read for a user.
    */
-  def read(linkId: Long, userId: Long, callback: Option[String]) = Action { implicit request =>
+  def read(linkId: Long, userId: Long) = Action { implicit request =>
     val ul = LinkModel.read(linkId, userId)
 
-    val json = Json.toJson(ul)
-    callback match {
-      case Some(callback) => Ok(Jsonp(callback, json))
-      case None => Ok(json)
-    }
+    Ok(Json.toJson(ul))
   }
 
   /**
    * Unmark a link as read for a user.
    */
-  def unRead(linkId: Long, userId: Long, callback: Option[String]) = Action { implicit request =>
+  def unRead(linkId: Long, userId: Long) = Action { implicit request =>
     val ul = LinkModel.unread(linkId, userId)
-    val json = Json.toJson(ul)
-    callback match {
-      case Some(callback) => Ok(Jsonp(callback, json))
-      case None => Ok(json)
-    }
+    Ok(Json.toJson(ul))
   }
 }

@@ -10,10 +10,7 @@ object Application extends Controller {
 
   def index(category: Option[String]) = Action {
 
-    val cats = Json.toJson(LinkModel.getAllCategories)
-    val links = Json.toJson(LinkModel.getAllForUser(1, category))
-
-    Ok(views.html.index(category, cats.toString, links.toString, controllers.api.Link.addLinkForm))
+    Ok(views.html.main(""))
   }
 
 }

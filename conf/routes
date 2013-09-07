@@ -5,13 +5,14 @@
 # Home page
 GET     /                           controllers.Application.index(category: Option[String])
 
-GET     /api/category               controllers.api.Link.categories(query: Option[String], callback: Option[String])
+GET     /api/category               controllers.api.Link.categories(query: Option[String])
 
-GET     /api/link/:userId           controllers.api.Link.list(userId: Long, category: Option[String], callback: Option[String])
-POST    /api/link                   controllers.api.Link.add(callback: Option[String])
-DELETE  /api/link/:id               controllers.api.Link.delete(id: Long, callback: Option[String])
-POST    /api/link/:id/read/:userId  controllers.api.Link.read(id: Long, userId: Long, callback: Option[String])
-DELETE  /api/link/:id/read/:userId  controllers.api.Link.unRead(id: Long, userId: Long, callback: Option[String])
+GET     /api/links                  controllers.api.Link.list(category: Option[String])
+POST    /api/links                  controllers.api.Link.add
+GET     /api/links/:id              controllers.api.Link.item(id: Long)
+DELETE  /api/links/:id              controllers.api.Link.delete(id: Long)
+POST    /api/links/:id/read/:userId controllers.api.Link.read(id: Long, userId: Long)
+DELETE  /api/links/:id/read/:userId controllers.api.Link.unRead(id: Long, userId: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
