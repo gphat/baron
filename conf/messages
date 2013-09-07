@@ -5,12 +5,13 @@ general.add=Add
 general.cancel=Cancel
 general.home=Home
 
-product.name=Baron
+product.name=TeamRead.Me
 
 link.add.title=Add Link
 link.description=Description
 link.list.title=Links
 link.category=Category
+link.done=Finished It!
 link.position=Position
 link.read=Read
 link.url=URL

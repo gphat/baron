@@ -4,11 +4,10 @@
 @import helper.bootstrap._
 
 @main(Messages("product.name")) {
-
-<div class="row-fluid" id="links">
- <div class="span3">
-  <div class="well sidebar-nav">
-   <ul class="nav nav-list categories">
+<div class="row" id="links">
+ <div class="col-md-3">
+  <div class="sidebar-nav">
+   <ul class="nav nav-pills nav-stacked categories">
     <li data-bind="css: { active: category() == null }"><a data-bind="click: changeCategory">@Messages("category.all")</a></li>
     <!-- ko foreach: categories -->
     <li data-bind="css: { active: name() === category() }"><a data-bind="click: changeCategory, text: name"></a></li>
@@ -19,9 +18,8 @@
    <img src="@routes.Assets.at("img/loading.gif")">
   </div>
  </div>
- <div class="span9">
+ <div class="col-md-9">
   <h1>@Messages("link.list.title") <span data-bind="visible: category() != null">for <span data-bind="text: category"></span></span></h1>
-  <div>
    <table class="table table-bordered table-striped table-hover">
     <thead>
      <tr>
@@ -38,7 +36,6 @@
      </tr>
     </tbody>
    </table>
-  </div>
  </div>
 
  <div id="addLink" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="addLink" aria-hidden="true">
@@ -61,7 +58,26 @@
    <button type="submit" class="btn btn-primary"><i class="icon-plus-sign icon-white"></i> @Messages("general.add")</button>
   </div>
  }
-</div>
+ </div>
+
+ <div id="readLink" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="readLink" aria-hidden="true">
+ @helper.bootstrap.form(action = controllers.api.routes.Link.add(None), dataBind="submit: doSubmit", args = 'class -> "form-horizontal", 'id -> "add-link") {
+  <div class="modal-header">
+   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+   <h3 id="myModalLabel">@Messages("link.read.title")</h3>
+  </div>
+  <div class="modal-body">
+   <fieldset>
+    <input type="hidden" name="poster" id="poster" value="1">
+   </fieldset>
+  </div>
+  <div class="modal-footer">
+   <button class="btn" data-dismiss="modal" aria-hidden="true"><i class="icon-ban-circle"></i> @Messages("general.cancel")</button>
+   <button type="submit" class="btn btn-primary"><i class="icon-plus-sign icon-white"></i> @Messages("general.add")</button>
+  </div>
+ }
+ </div>
+
 
 </div>
 
